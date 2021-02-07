@@ -1,0 +1,16 @@
+a{
+    text-decoration: none;
+}
+li{
+    list-style: none;
+}
+.card{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#meal-ingredient-text{
+    display: none;
+}
+#error-msg{
+    display: none;
+}
