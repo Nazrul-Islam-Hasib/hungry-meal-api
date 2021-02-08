@@ -32,7 +32,10 @@ const apiCall = async (api) => {
 
 const showData = data => {
     const mealContainer = document.querySelector("#meal-content");
+    const Ingredientcontainer = document.querySelector("#meal-ingredient");
     mealContainer.innerHTML = "";
+    Ingredientcontainer.innerHTML = "";
+    Ingredientcontainer.style.borderBottom = "none";
     data.forEach( element => {
         const mealDiv = document.createElement("div");
         mealDiv.className = "col-md-4";
@@ -49,13 +52,11 @@ const showData = data => {
 
 
 
-function showIngredient(apiValue){
+const showIngredient = (apiValue) =>{
     fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${apiValue}`)
     .then(res => res.json())
     .then(data => {
-        let container = document.querySelector("#meal-ingredient");
-        // container.style.borderBottom = "2px solid blanchedalmond";
-        // document.getElementById("meal-ingredient-text").style.display = "block";
+        const container = document.querySelector("#meal-ingredient");
         container.innerHTML="";
         let card = document.createElement("div");
         let cardImg = document.createElement("img");
