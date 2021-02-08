@@ -1,5 +1,7 @@
 const searchBtn = document.getElementById('meal-search');
 const mealNameInput = document.getElementById('meal-name');
+
+
 const errorMsg = document.getElementById("error-msg");
 
 searchBtn.addEventListener('click', function(){ 
@@ -12,67 +14,49 @@ searchBtn.addEventListener('click', function(){
     }
 })
 
-function apiCall(api){
-    fetch(api)
-    .then(res => res.json())
-    .then(data => {
-        showData(data.meals)
-    }).catch(error => {
-        console.log(error);
-        errorMsg.innerText = "Meals not found " + error;
+const apiCall = async (api) => {
+    const errorMsg = document.getElementById("error-msg");
+    try {
+        const res = await fetch(api);
+        const data = await res.json();
+        showData(data.meals);
+        errorMsg.style.display = "none";
+    } catch (error) {
+        console.log("error: " + error)
+        
+        errorMsg.innerText = "Item Not found, Try with a first later or meaningfull name!";
         errorMsg.style.display = "block";
-    });
+    }
 }
 
 
-function showData(data){
-    errorMsg.style.display = "none";
-    data.forEach(res => {
-        let container = document.querySelector("#meal-content");
-        let card = document.createElement("div");
-        let cardImg = document.createElement("img");
-        let cardBody = document.createElement("div");
-        let cardTitle = document.createElement("h5");
-        let col = document.createElement("div");
-  
-        card.classList.add("card")
-
-        cardImg.src = res.strMealThumb;
-        cardImg.classList.add("card-img-top");
-        card.appendChild(cardImg);
-
-        
-        cardBody.classList.add("card-body");
-        card.appendChild(cardBody);
-
-        
-        cardTitle.innerText = res.strMeal;
-        cardTitle.classList.add("card-title")
-        cardBody.appendChild(cardTitle);
-
-        
-        col.classList.add("col-md-4")
-        col.appendChild(card);
-        
-        container.appendChild(col);
-
-        card.addEventListener('click', function(){
-            console.log(res.idMeal);
-            showIngredient(res.idMeal);
-        })
-        
-    });
+const showData = data => {
+    const mealContainer = document.querySelector("#meal-content");
+    mealContainer.innerHTML = "";
+    data.forEach( element => {
+        const mealDiv = document.createElement("div");
+        mealDiv.className = "col-md-4";
+        mealDiv.innerHTML = `
+            <div class="card" onclick="showIngredient(${element.idMeal})" >
+                <img src="${element.strMealThumb}" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title">${element.strMeal}</h5>
+                </div>
+            </div>`
+        mealContainer.appendChild(mealDiv);
+    })
 }
+
 
 
 function showIngredient(apiValue){
     fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${apiValue}`)
     .then(res => res.json())
     .then(data => {
-        console.log(data.meals[0].strIngredient1);
         let container = document.querySelector("#meal-ingredient");
-        container.style.borderBottom = "2px solid blanchedalmond";
-        document.getElementById("meal-ingredient-text").style.display = "block";
+        // container.style.borderBottom = "2px solid blanchedalmond";
+        // document.getElementById("meal-ingredient-text").style.display = "block";
+        container.innerHTML="";
         let card = document.createElement("div");
         let cardImg = document.createElement("img");
         let cardBody = document.createElement("div");
@@ -129,5 +113,7 @@ function showIngredient(apiValue){
         col.appendChild(card);
         
         container.appendChild(col);
+        container.style.borderBottom = "2px solid blanchedalmond";
     })
 }
+
